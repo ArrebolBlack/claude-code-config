@@ -1,5 +1,7 @@
 # Claude Code Config
 
+[中文](./README.zh.md) | **English**
+
 Cross-device Claude Code configuration managed via git.
 
 ## Structure
@@ -22,7 +24,7 @@ claude_code_config/
 
 2. Clone this repo:
    ```bash
-   git clone https://github.com/YOUR_USER/claude-code-config.git ~/claude_code_config
+   git clone https://github.com/ArrebolBlack/claude-code-config.git ~/claude_code_config
    ```
 
 3. Add your GitHub PAT to your shell profile:
@@ -41,7 +43,7 @@ claude_code_config/
 After pulling updates from another device:
 ```bash
 git pull
-# MCP servers are already applied via symlinks for settings.json
+# settings.json changes take effect immediately via symlink
 # If mcp.json changed, re-apply:
 bash scripts/sync-mcp.sh
 ```
