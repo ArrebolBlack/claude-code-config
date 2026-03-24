@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "comment": "Portable MCP server declarations. Secrets must be set as env vars before running sync-mcp.sh.",
+  "servers": [
+    {
+      "name": "playwright",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
+    },
+    {
+      "name": "filesystem",
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "$HOME/Documents",
+        "$HOME/Desktop",
+        "$HOME/Downloads"
+      ],
+      "env": {}
+    }
+  ],
+  "project_servers": {
+    "comment": "Project-level servers with secrets. Set env vars, then run: claude mcp add --project <name> ...",
+    "examples": [
+      {
+        "name": "github-server",
+        "type": "stdio",
+        "command": "npx",
+        "args": ["@modelcontextprotocol/server-github"],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_PAT"
+        },
+        "note": "Set GITHUB_PAT env var before applying. Never commit the actual token."
+      }
+    ]
+  }
+}

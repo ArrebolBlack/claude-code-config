@@ -1,0 +1,10 @@
+.env
+.env.*
+secrets/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Claude Code project-level state (machine-local, may contain session data)
+.claude/

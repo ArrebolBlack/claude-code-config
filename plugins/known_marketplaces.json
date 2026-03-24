@@ -1,0 +1,14 @@
+{
+  "anthropic-agent-skills": {
+    "source": {
+      "source": "git",
+      "url": "https://github.com/anthropics/skills.git"
+    }
+  },
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    }
+  }
+}
