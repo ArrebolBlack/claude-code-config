@@ -8,14 +8,19 @@
 
 ```
 claude_code_config/
-├── settings.json                    # 插件启用状态与 Marketplace URL
+├── settings.json                    # 插件启用状态、Marketplace URL、SessionStart hook
 ├── CLAUDE.md                        # Claude Code 全局指令
 ├── mcp.json                         # 可移植的 MCP 服务器声明（不含密钥）
+├── providers.example.json           # API provider 模板（入库）
+├── providers.local.json             # API provider 实际密钥（.gitignore 排除）
+├── .current-provider                # 当前激活的 provider 名（入库）
 ├── plugins/
 │   └── known_marketplaces.json      # Marketplace 注册表
 └── scripts/
     ├── bootstrap.sh                 # Linux/macOS 新设备一键初始化
-    └── sync-mcp.sh                  # Linux/macOS 重新应用 MCP 服务器配置
+    ├── sync-mcp.sh                  # Linux/macOS 重新应用 MCP 服务器配置
+    ├── inject-provider.sh           # SessionStart hook：自动注入 API 凭据
+    └── use-api.sh                   # 切换 API provider
 ```
 
 ---
@@ -44,7 +49,55 @@ claude_code_config/
    bash ~/claude_code_config/scripts/bootstrap.sh
    ```
 
-脚本会自动完成：备份原文件 → 创建软链接 → 注册 MCP 服务器 → 安装插件。
+脚本会自动完成：备份原文件 → 创建软链接 → 注册 MCP 服务器 → 安装插件 → 配置 API provider 切换。
+
+---
+
+## API Provider 切换
+
+支持管理多个 API provider（不同厂商的 base URL + API key），随时切换。
+
+### 配置 providers.local.json
+
+bootstrap 脚本会自动从模板创建 `providers.local.json`，填入你的真实密钥：
+
+```json
+{
+  "anthropic": {
+    "base_url": "https://api.anthropic.com",
+    "api_key": "sk-ant-your-key-here"
+  },
+  "openai": {
+    "base_url": "https://api.openai.com/v1",
+    "api_key": "sk-your-openai-key-here"
+  },
+  "custom-proxy": {
+    "base_url": "https://your-proxy.example.com",
+    "api_key": "sk-your-proxy-key-here"
+  }
+}
+```
+
+> `providers.local.json` 已加入 `.gitignore`，不会被推送到 GitHub。
+
+### 使用方式
+
+```bash
+# 查看可用 providers 及当前激活的
+use-api
+
+# 切换 provider（下次启动新 claude 会话自动生效）
+use-api openai
+
+# 在当前 shell 立即生效（需要重启 claude）
+eval "$(use-api openai --export)"
+```
+
+### 工作原理
+
+- `settings.json` 中注册了 `SessionStart` hook，每次启动新 claude 会话时自动读取 `.current-provider` 并注入对应的 `ANTHROPIC_API_KEY` 和 `ANTHROPIC_BASE_URL`
+- 由于 Claude Code 在启动时读取一次 API 配置，切换后需要开启新会话才能生效
+- `eval "$(use-api <name> --export)"` 可同时更新当前 shell 的环境变量，然后重启 claude 即可立即使用新 provider
 
 ---
 
@@ -121,12 +174,15 @@ git pull
 ## 跟踪 vs 排除的文件
 
 **跟踪（跨设备同步）：**
-- `settings.json` — 插件启用状态、Marketplace URL
+- `settings.json` — 插件启用状态、Marketplace URL、SessionStart hook
 - `CLAUDE.md` — 全局指令
 - `mcp.json` — MCP 服务器声明（不含密钥）
 - `plugins/known_marketplaces.json` — Marketplace 注册表
+- `providers.example.json` — API provider 模板
+- `.current-provider` — 当前激活的 provider 名
 
 **不跟踪（机器本地或含密钥）：**
+- `providers.local.json` — API provider 实际密钥
 - `~/.claude.json` / `%USERPROFILE%\.claude.json` — 应用状态数据库（会话、密钥、项目状态）
 - `~/.claude/plugins/installed_plugins.json` — 绝对安装路径
 - `~/.claude/plugins/cache/` — 已下载的插件文件

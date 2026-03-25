@@ -8,14 +8,19 @@ Cross-device Claude Code configuration managed via git.
 
 ```
 claude_code_config/
-├── settings.json                    # Plugin enablement & marketplace URLs
+├── settings.json                    # Plugin enablement, marketplace URLs, SessionStart hook
 ├── CLAUDE.md                        # Global instructions for Claude Code
 ├── mcp.json                         # Portable MCP server declarations (no secrets)
+├── providers.example.json           # API provider template (tracked in git)
+├── providers.local.json             # API provider secrets (gitignored)
+├── .current-provider                # Active provider name (tracked in git)
 ├── plugins/
 │   └── known_marketplaces.json      # Marketplace registry
 └── scripts/
     ├── bootstrap.sh                 # Linux/macOS new device setup (one command)
-    └── sync-mcp.sh                  # Linux/macOS re-apply MCP servers
+    ├── sync-mcp.sh                  # Linux/macOS re-apply MCP servers
+    ├── inject-provider.sh           # SessionStart hook: auto-inject API credentials
+    └── use-api.sh                   # Switch API provider
 ```
 
 ---
@@ -44,7 +49,55 @@ claude_code_config/
    bash ~/claude_code_config/scripts/bootstrap.sh
    ```
 
-The script handles everything: backup existing files → create symlinks → register MCP servers → install plugins.
+The script handles everything: backup existing files → create symlinks → register MCP servers → install plugins → configure API provider switching.
+
+---
+
+## API Provider Switching
+
+Manage multiple API providers (different vendors' base URLs + API keys) and switch between them freely.
+
+### Configure providers.local.json
+
+The bootstrap script creates `providers.local.json` from the template automatically. Fill in your real keys:
+
+```json
+{
+  "anthropic": {
+    "base_url": "https://api.anthropic.com",
+    "api_key": "sk-ant-your-key-here"
+  },
+  "openai": {
+    "base_url": "https://api.openai.com/v1",
+    "api_key": "sk-your-openai-key-here"
+  },
+  "custom-proxy": {
+    "base_url": "https://your-proxy.example.com",
+    "api_key": "sk-your-proxy-key-here"
+  }
+}
+```
+
+> `providers.local.json` is gitignored and never pushed to GitHub.
+
+### Usage
+
+```bash
+# List available providers and show the active one
+use-api
+
+# Switch provider (takes effect on next new claude session)
+use-api openai
+
+# Apply immediately in current shell (then restart claude)
+eval "$(use-api openai --export)"
+```
+
+### How it works
+
+- `settings.json` registers a `SessionStart` hook that reads `.current-provider` on every new session and injects the matching `ANTHROPIC_API_KEY` and `ANTHROPIC_BASE_URL`
+- Since Claude Code reads API config once at startup, switching requires starting a new session
+- `eval "$(use-api <name> --export)"` also updates the current shell's env vars — restart claude to use the new provider immediately
 
 ---
 
@@ -121,12 +174,15 @@ git pull
 ## What's Tracked vs Excluded
 
 **Tracked (synced across devices):**
-- `settings.json` — plugin enablement, marketplace URLs
+- `settings.json` — plugin enablement, marketplace URLs, SessionStart hook
 - `CLAUDE.md` — global instructions
 - `mcp.json` — MCP server declarations (no secrets)
 - `plugins/known_marketplaces.json` — marketplace registry
+- `providers.example.json` — API provider template
+- `.current-provider` — active provider name
 
 **Not tracked (machine-local or contains secrets):**
+- `providers.local.json` — API provider secrets
 - `~/.claude.json` / `%USERPROFILE%\.claude.json` — app state DB (sessions, secrets, project state)
 - `~/.claude/plugins/installed_plugins.json` — absolute install paths
 - `~/.claude/plugins/cache/` — downloaded plugin binaries

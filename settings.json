@@ -11,5 +11,17 @@
         "url": "https://github.com/anthropics/skills.git"
       }
     }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /vepfs-mlp2/queue010/20252203765/claude_code_config/scripts/inject-provider.sh"
+          }
+        ]
+      }
+    ]
   }
 }

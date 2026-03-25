@@ -8,3 +8,6 @@ Thumbs.db
 
 # Claude Code project-level state (machine-local, may contain session data)
 .claude/
+
+# API provider secrets (copy from providers.example.json and fill in real keys)
+providers.local.json
