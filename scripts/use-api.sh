@@ -52,13 +52,15 @@ if '$PROVIDER' not in d:
 # ── Switch provider ────────────────────────────────────────────────────────────
 echo "$PROVIDER" > "$PROVIDER_FILE"
 
-API_KEY=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PROVIDER']['api_key'])")
-BASE_URL=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PROVIDER']['base_url'])")
+BASE_URL=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PROVIDER'].get('base_url', ''))")
+API_KEY=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PROVIDER'].get('api_key', ''))")
+AUTH_TOKEN=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PROVIDER'].get('auth_token', ''))")
 
 # --export mode: print eval-able export commands
 if [[ "$EXPORT_MODE" == "--export" ]]; then
-  echo "export ANTHROPIC_API_KEY='$API_KEY'"
-  echo "export ANTHROPIC_BASE_URL='$BASE_URL'"
+  [[ -n "$BASE_URL" ]]   && echo "export ANTHROPIC_BASE_URL='$BASE_URL'"
+  [[ -n "$API_KEY" ]]    && echo "export ANTHROPIC_API_KEY='$API_KEY'"
+  [[ -n "$AUTH_TOKEN" ]] && echo "export ANTHROPIC_AUTH_TOKEN='$AUTH_TOKEN'"
   exit 0
 fi
 

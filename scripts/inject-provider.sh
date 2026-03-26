@@ -15,22 +15,30 @@ LOCAL="$REPO_DIR/providers.local.json"
 PROVIDER=$(tr -d '[:space:]' < "$PROVIDER_FILE")
 [[ -n "$PROVIDER" ]] || exit 0
 
-API_KEY=$(python3 -c "
-import json, sys
-d = json.load(open('$LOCAL'))
-if '$PROVIDER' not in d:
-    sys.exit(1)
-print(d['$PROVIDER']['api_key'])
-" 2>/dev/null) || exit 0
-
 BASE_URL=$(python3 -c "
 import json, sys
 d = json.load(open('$LOCAL'))
 if '$PROVIDER' not in d:
     sys.exit(1)
-print(d['$PROVIDER']['base_url'])
+print(d['$PROVIDER'].get('base_url', ''))
 " 2>/dev/null) || exit 0
 
-[[ -n "$API_KEY" ]]  && echo "ANTHROPIC_API_KEY=$API_KEY"     >> "$CLAUDE_ENV_FILE"
-[[ -n "$API_KEY" ]]  && echo "ANTHROPIC_AUTH_TOKEN=$API_KEY"  >> "$CLAUDE_ENV_FILE"
-[[ -n "$BASE_URL" ]] && echo "ANTHROPIC_BASE_URL=$BASE_URL"    >> "$CLAUDE_ENV_FILE"
+API_KEY=$(python3 -c "
+import json, sys
+d = json.load(open('$LOCAL'))
+if '$PROVIDER' not in d:
+    sys.exit(1)
+print(d['$PROVIDER'].get('api_key', ''))
+" 2>/dev/null) || exit 0
+
+AUTH_TOKEN=$(python3 -c "
+import json, sys
+d = json.load(open('$LOCAL'))
+if '$PROVIDER' not in d:
+    sys.exit(1)
+print(d['$PROVIDER'].get('auth_token', ''))
+" 2>/dev/null) || exit 0
+
+[[ -n "$BASE_URL" ]]   && echo "ANTHROPIC_BASE_URL=$BASE_URL"   >> "$CLAUDE_ENV_FILE"
+[[ -n "$API_KEY" ]]    && echo "ANTHROPIC_API_KEY=$API_KEY"      >> "$CLAUDE_ENV_FILE"
+[[ -n "$AUTH_TOKEN" ]] && echo "ANTHROPIC_AUTH_TOKEN=$AUTH_TOKEN" >> "$CLAUDE_ENV_FILE"

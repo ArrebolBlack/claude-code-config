@@ -1,14 +1,17 @@
 {
   "anthropic": {
     "base_url": "https://api.anthropic.com",
-    "api_key": "sk-ant-your-key-here"
+    "api_key": "sk-ant-your-key-here",
+    "auth_token": ""
   },
   "openai": {
     "base_url": "https://api.openai.com/v1",
-    "api_key": "sk-your-openai-key-here"
+    "api_key": "sk-your-openai-key-here",
+    "auth_token": ""
   },
-  "custom-proxy": {
-    "base_url": "https://your-proxy.example.com",
-    "api_key": "sk-your-proxy-key-here"
+  "glm": {
+    "base_url": "https://open.bigmodel.cn/api/anthropic",
+    "api_key": "",
+    "auth_token": "your-zhipu-token.here"
   }
 }
