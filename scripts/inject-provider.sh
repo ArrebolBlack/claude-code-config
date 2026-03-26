@@ -31,5 +31,6 @@ if '$PROVIDER' not in d:
 print(d['$PROVIDER']['base_url'])
 " 2>/dev/null) || exit 0
 
-[[ -n "$API_KEY" ]]  && echo "ANTHROPIC_API_KEY=$API_KEY"   >> "$CLAUDE_ENV_FILE"
-[[ -n "$BASE_URL" ]] && echo "ANTHROPIC_BASE_URL=$BASE_URL" >> "$CLAUDE_ENV_FILE"
+[[ -n "$API_KEY" ]]  && echo "ANTHROPIC_API_KEY=$API_KEY"     >> "$CLAUDE_ENV_FILE"
+[[ -n "$API_KEY" ]]  && echo "ANTHROPIC_AUTH_TOKEN=$API_KEY"  >> "$CLAUDE_ENV_FILE"
+[[ -n "$BASE_URL" ]] && echo "ANTHROPIC_BASE_URL=$BASE_URL"    >> "$CLAUDE_ENV_FILE"

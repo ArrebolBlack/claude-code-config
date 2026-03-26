@@ -95,7 +95,7 @@ eval "$(use-api openai --export)"
 
 ### 工作原理
 
-- `settings.json` 中注册了 `SessionStart` hook，每次启动新 claude 会话时自动读取 `.current-provider` 并注入对应的 `ANTHROPIC_API_KEY` 和 `ANTHROPIC_BASE_URL`
+- `settings.json` 中注册了 `SessionStart` hook，每次启动新 claude 会话时自动读取 `.current-provider` 并注入对应的 `ANTHROPIC_API_KEY`、`ANTHROPIC_AUTH_TOKEN` 和 `ANTHROPIC_BASE_URL`
 - 由于 Claude Code 在启动时读取一次 API 配置，切换后需要开启新会话才能生效
 - `eval "$(use-api <name> --export)"` 可同时更新当前 shell 的环境变量，然后重启 claude 即可立即使用新 provider
 
