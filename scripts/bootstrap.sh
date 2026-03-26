@@ -83,9 +83,10 @@ import json, re
 with open('$SETTINGS') as f:
     content = f.read()
 # Replace the command path for inject-provider.sh
+# Match various formats: bash ~/claude_code_config/scripts/... or bash \${HOME:-~}/claude_code_config/scripts/...
 content = re.sub(
-    r'\"command\": \"bash .+/inject-provider\.sh\"',
-    '\"command\": \"bash $INJECT_SCRIPT\"',
+    r'\"command\": \"bash[^\"]*inject-provider\.sh\"',
+    '\"command\": \\\"bash $INJECT_SCRIPT\\\"',
     content
 )
 with open('$SETTINGS', 'w') as f:
