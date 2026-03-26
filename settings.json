@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash /home/yjq/claude_code_config/scripts/inject-provider.sh"
+            "command": "bash ${HOME:-~}/claude_code_config/scripts/inject-provider.sh"
           }
         ]
       }

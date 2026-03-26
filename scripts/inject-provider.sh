@@ -39,6 +39,16 @@ if '$PROVIDER' not in d:
 print(d['$PROVIDER'].get('auth_token', ''))
 " 2>/dev/null) || exit 0
 
-[[ -n "$BASE_URL" ]]   && echo "ANTHROPIC_BASE_URL=$BASE_URL"   >> "$CLAUDE_ENV_FILE"
-[[ -n "$API_KEY" ]]    && echo "ANTHROPIC_API_KEY=$API_KEY"      >> "$CLAUDE_ENV_FILE"
-[[ -n "$AUTH_TOKEN" ]] && echo "ANTHROPIC_AUTH_TOKEN=$AUTH_TOKEN" >> "$CLAUDE_ENV_FILE"
+# Intelligent environment variable selection based on provider type
+case "$PROVIDER" in
+    "glm"|"zhipu"|"bigmodel")
+        # ZHIPU/GLM providers use ANTHROPIC_AUTH_TOKEN only
+        [[ -n "$BASE_URL" ]]   && echo "ANTHROPIC_BASE_URL=$BASE_URL"   >> "$CLAUDE_ENV_FILE"
+        [[ -n "$AUTH_TOKEN" ]] && echo "ANTHROPIC_AUTH_TOKEN=$AUTH_TOKEN" >> "$CLAUDE_ENV_FILE"
+        ;;
+    *)
+        # Other providers use ANTHROPIC_API_KEY
+        [[ -n "$BASE_URL" ]] && echo "ANTHROPIC_BASE_URL=$BASE_URL" >> "$CLAUDE_ENV_FILE"
+        [[ -n "$API_KEY" ]]  && echo "ANTHROPIC_API_KEY=$API_KEY"     >> "$CLAUDE_ENV_FILE"
+        ;;
+esac

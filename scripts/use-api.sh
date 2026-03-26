@@ -58,9 +58,18 @@ AUTH_TOKEN=$(python3 -c "import json; d=json.load(open('$LOCAL')); print(d['$PRO
 
 # --export mode: print eval-able export commands
 if [[ "$EXPORT_MODE" == "--export" ]]; then
-  [[ -n "$BASE_URL" ]]   && echo "export ANTHROPIC_BASE_URL='$BASE_URL'"
-  [[ -n "$API_KEY" ]]    && echo "export ANTHROPIC_API_KEY='$API_KEY'"
-  [[ -n "$AUTH_TOKEN" ]] && echo "export ANTHROPIC_AUTH_TOKEN='$AUTH_TOKEN'"
+  case "$PROVIDER" in
+    "glm"|"zhipu"|"bigmodel")
+      # ZHIPU/GLM providers use ANTHROPIC_AUTH_TOKEN only
+      [[ -n "$BASE_URL" ]]   && echo "export ANTHROPIC_BASE_URL='$BASE_URL'"
+      [[ -n "$AUTH_TOKEN" ]] && echo "export ANTHROPIC_AUTH_TOKEN='$AUTH_TOKEN'"
+      ;;
+    *)
+      # Other providers use ANTHROPIC_API_KEY
+      [[ -n "$BASE_URL" ]] && echo "export ANTHROPIC_BASE_URL='$BASE_URL'"
+      [[ -n "$API_KEY" ]]  && echo "export ANTHROPIC_API_KEY='$API_KEY'"
+      ;;
+  esac
   exit 0
 fi
 
