@@ -97,14 +97,25 @@ fi
 SHELL_PROFILE="$HOME/.bashrc"
 [[ -f "$HOME/.zshrc" ]] && SHELL_PROFILE="$HOME/.zshrc"
 USE_API_ALIAS="alias use-api='bash $REPO_DIR/scripts/use-api.sh'"
-if ! grep -qF "use-api.sh" "$SHELL_PROFILE" 2>/dev/null; then
+
+# Check if alias exists with correct path
+if grep -qF "use-api" "$SHELL_PROFILE" 2>/dev/null; then
+  # Check if the path in alias matches current repo
+  if ! grep -q "$REPO_DIR/scripts/use-api.sh" "$SHELL_PROFILE" 2>/dev/null; then
+    echo "" >> "$SHELL_PROFILE"
+    echo "# Claude Code API provider switching (updated)" >> "$SHELL_PROFILE"
+    echo "$USE_API_ALIAS" >> "$SHELL_PROFILE"
+    echo "  Updated 'use-api' alias to $SHELL_PROFILE"
+    echo "  Run: source $SHELL_PROFILE"
+  else
+    echo "  'use-api' alias already correct in $SHELL_PROFILE"
+  fi
+else
   echo "" >> "$SHELL_PROFILE"
   echo "# Claude Code API provider switching" >> "$SHELL_PROFILE"
   echo "$USE_API_ALIAS" >> "$SHELL_PROFILE"
   echo "  Added 'use-api' alias to $SHELL_PROFILE"
   echo "  Run: source $SHELL_PROFILE"
-else
-  echo "  'use-api' alias already in $SHELL_PROFILE"
 fi
 echo ""
 
