@@ -39,6 +39,9 @@ echo "--- Creating symlinks ---"
 
 mkdir -p "$CLAUDE_DIR/plugins"
 
+# Create scripts symlinks directory
+mkdir -p "$CLAUDE_DIR/scripts"
+
 # settings.json
 backup_if_exists "$CLAUDE_DIR/settings.json"
 ln -sf "$REPO_DIR/settings.json" "$CLAUDE_DIR/settings.json"
@@ -53,6 +56,11 @@ echo "  Linked: ~/.claude/CLAUDE.md"
 backup_if_exists "$CLAUDE_DIR/plugins/known_marketplaces.json"
 ln -sf "$REPO_DIR/plugins/known_marketplaces.json" "$CLAUDE_DIR/plugins/known_marketplaces.json"
 echo "  Linked: ~/.claude/plugins/known_marketplaces.json"
+
+# scripts/inject-provider.sh (for hook)
+backup_if_exists "$CLAUDE_DIR/scripts/inject-provider.sh"
+ln -sf "$REPO_DIR/scripts/inject-provider.sh" "$CLAUDE_DIR/scripts/inject-provider.sh"
+echo "  Linked: ~/.claude/scripts/inject-provider.sh"
 
 echo ""
 
@@ -74,25 +82,7 @@ echo ""
 # ── 6. Set up API provider switching ──────────────────────────────────────────
 echo "--- Setting up API provider switching ---"
 
-# Patch the inject-provider.sh path in settings.json to match this machine's repo location
-SETTINGS="$REPO_DIR/settings.json"
-INJECT_SCRIPT="$REPO_DIR/scripts/inject-provider.sh"
-# Replace any existing inject-provider.sh path with the current one
-python3 -c "
-import json, re
-with open('$SETTINGS') as f:
-    content = f.read()
-# Replace the command path for inject-provider.sh
-# Match various formats: bash ~/claude_code_config/scripts/... or bash \${HOME:-~}/claude_code_config/scripts/...
-content = re.sub(
-    r'\"command\": \"bash[^\"]*inject-provider\.sh\"',
-    '\"command\": \\\"bash $INJECT_SCRIPT\\\"',
-    content
-)
-with open('$SETTINGS', 'w') as f:
-    f.write(content)
-print('  Hook path updated in settings.json')
-"
+# Hook uses symbolic link created earlier (no path replacement needed)
 
 # Set up providers.local.json if not present
 if [[ ! -f "$REPO_DIR/providers.local.json" ]]; then

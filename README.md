@@ -7,7 +7,7 @@ Cross-device Claude Code configuration managed via git.
 ## Structure
 
 ```
-claude_code_config/
+claude-code-config/
 ├── settings.json                    # Plugin enablement, marketplace URLs, SessionStart hook
 ├── CLAUDE.md                        # Global instructions for Claude Code
 ├── mcp.json                         # Portable MCP server declarations (no secrets)
@@ -33,7 +33,7 @@ claude_code_config/
 
 2. Clone this repo:
    ```bash
-   git clone https://github.com/ArrebolBlack/claude-code-config.git ~/claude_code_config
+   git clone https://github.com/ArrebolBlack/claude-code-config.git ~/claude-code-config
    ```
 
 3. Add your GitHub PAT to your shell profile:
@@ -46,7 +46,7 @@ claude_code_config/
 
 4. Run bootstrap:
    ```bash
-   bash ~/claude_code_config/scripts/bootstrap.sh
+   bash ~/claude-code-config/scripts/bootstrap.sh
    ```
 
 The script handles everything: backup existing files → create symlinks → register MCP servers → install plugins → configure API provider switching.
@@ -110,7 +110,7 @@ eval "$(use-api openai --export)"
 
 2. Open PowerShell as Administrator and clone this repo:
    ```powershell
-   git clone https://github.com/ArrebolBlack/claude-code-config.git "$HOME\claude_code_config"
+   git clone https://github.com/ArrebolBlack/claude-code-config.git "$HOME\claude-code-config"
    ```
 
 3. Set your GitHub PAT as a persistent user environment variable:
@@ -120,7 +120,7 @@ eval "$(use-api openai --export)"
 
 4. Create symlinks manually (replaces bootstrap.sh):
    ```powershell
-   $repo = "$HOME\claude_code_config"
+   $repo = "$HOME\claude-code-config"
    $claude = "$HOME\.claude"
 
    # Backup existing files
@@ -156,7 +156,7 @@ eval "$(use-api openai --export)"
 
 ### Linux / macOS
 ```bash
-cd ~/claude_code_config
+cd ~/claude-code-config
 git pull
 # If mcp.json changed, re-apply:
 bash scripts/sync-mcp.sh
@@ -164,7 +164,7 @@ bash scripts/sync-mcp.sh
 
 ### Windows
 ```powershell
-cd "$HOME\claude_code_config"
+cd "$HOME\claude-code-config"
 git pull
 # If mcp.json changed, re-register MCP servers (see step 5 above)
 ```

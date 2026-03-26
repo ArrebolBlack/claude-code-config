@@ -1,4 +1,20 @@
 {
+  "env": {
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/scripts/inject-provider.sh"
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
     "claude-api@anthropic-agent-skills": true,
     "document-skills@anthropic-agent-skills": true,
@@ -12,20 +28,5 @@
       }
     }
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${HOME:-~}/claude_code_config/scripts/inject-provider.sh"
-          }
-        ]
-      }
-    ]
-  },
-  "env": {
-    "API_TIMEOUT_MS": "3000000",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": 1
-  }
+  "model": "opus[1m]"
 }

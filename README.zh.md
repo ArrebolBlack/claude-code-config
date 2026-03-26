@@ -33,7 +33,7 @@ claude_code_config/
 
 2. Clone 本仓库：
    ```bash
-   git clone https://github.com/ArrebolBlack/claude-code-config.git ~/claude_code_config
+   git clone https://github.com/ArrebolBlack/claude-code-config.git ~/claude-code-config
    ```
 
 3. 在 shell profile 中设置密钥（如需要 github-server MCP）：
@@ -46,7 +46,7 @@ claude_code_config/
 
 4. 运行 bootstrap 脚本：
    ```bash
-   bash ~/claude_code_config/scripts/bootstrap.sh
+   bash ~/claude-code-config/scripts/bootstrap.sh
    ```
 
 脚本会自动完成：备份原文件 → 创建软链接 → 注册 MCP 服务器 → 安装插件 → 配置 API provider 切换。
@@ -111,7 +111,7 @@ eval "$(use-api openai --export)"
 
 2. 以管理员身份打开 PowerShell，Clone 本仓库：
    ```powershell
-   git clone https://github.com/ArrebolBlack/claude-code-config.git "$HOME\claude_code_config"
+   git clone https://github.com/ArrebolBlack/claude-code-config.git "$HOME\claude-code-config"
    ```
 
 3. 设置密钥环境变量（永久生效）：
@@ -121,7 +121,7 @@ eval "$(use-api openai --export)"
 
 4. 手动创建符号链接（替代 bootstrap.sh）：
    ```powershell
-   $repo = "$HOME\claude_code_config"
+   $repo = "$HOME\claude-code-config"
    $claude = "$HOME\.claude"
 
    # 备份原文件
@@ -157,7 +157,7 @@ eval "$(use-api openai --export)"
 
 ### Linux / macOS
 ```bash
-cd ~/claude_code_config
+cd ~/claude-code-config
 git pull
 # 如果 mcp.json 有变更，重新应用：
 bash scripts/sync-mcp.sh
@@ -165,7 +165,7 @@ bash scripts/sync-mcp.sh
 
 ### Windows
 ```powershell
-cd "$HOME\claude_code_config"
+cd "$HOME\claude-code-config"
 git pull
 # 如果 mcp.json 有变更，重新注册 MCP 服务器（参考上方步骤 5）
 ```
